@@ -1,60 +1,44 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
-# ====== ВАШИ ДАННЫЕ ======
+# Ваш токен бота
 TOKEN = "8559334940:AAGwmycwxNnY4mpPJXXKHzoqUGJPgyDt0bU"
-PDF_LINK = "https://drive.google.com/uc?export=download&id=1a2b3c4d5e6f7g8h9i"  # <- готовая ссылка на PDF
-TELEGRAM_CHANNEL_LINK = "https://web.telegram.org/k/#@ai_freelance_startgo"
-INSTAGRAM_LINK = "https://www.instagram.com/viktoria.ai.life?igsh=MTliOHJzaWxqOWNsOQ"
-YOUTUBE_LINK = "https://www.youtube.com/@фриланс-АИ"
-VK_LINK = "https://vk.com/frilans0101"
-BOT_LINK = "https://t.me/aware_art_bot?start=welcome"
 
-# ====== Приветственное сообщение ======
-WELCOME_TEXT = (
-    "Привет! 👋 Я Vika I AI 🤖\n\n"
-    "Рада приветствовать тебя! У меня есть для тебя подарок — "
-    "PDF с 5 бесплатными нейросетями для фото, видео, текста, голоса и монтажа!\n\n"
-    "Выбери, что хочешь сделать:"
-)
+# Ссылки на ваши социальные сети и канал
+CHANNEL_LINK = "https://web.telegram.org/k/#@ai_freelance_startgo"
+PDF_FILE = "gift.png"  # имя файла с PDF/PNG в проекте
 
-# ====== Команда /start ======
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Приветственное сообщение с кнопками"""
     keyboard = [
-        [InlineKeyboardButton("Получить подарок 🎁", callback_data='pdf')],
-        [InlineKeyboardButton("Подписаться на канал 🔔", url=TELEGRAM_CHANNEL_LINK)]
+        [InlineKeyboardButton("Получить подарок 🎁", callback_data='get_gift')],
+        [InlineKeyboardButton("Подписаться на канал 📺", url=CHANNEL_LINK)]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(WELCOME_TEXT, reply_markup=reply_markup)
 
-# ====== Обработка нажатий кнопок ======
+    await update.message.reply_text(
+        "Привет! 👋\n"
+        "Рада тебя видеть! У меня для тебя подарок — PDF с 5 бесплатными нейросетями для фото, видео, текста, голоса и монтажа.\n\n"
+        "Выбери одну из кнопок ниже:",
+        reply_markup=reply_markup
+    )
+
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Обработчик нажатий на кнопки"""
     query = update.callback_query
     await query.answer()
-    
-    if query.data == "pdf":
-        text = (
-            "Вот твой PDF с 5 бесплатными нейросетями:\n"
-            f"{PDF_LINK}\n\n"
-            "Как использовать нейросети:\n"
-            "1. Tensor.art — https://tensor.art\n"
-            "2. HeyGen — https://www.heygen.com\n"
-            "3. ChatGPT — https://chat.openai.com\n"
-            "4. ElevenLabs — https://elevenlabs.io\n"
-            "5. CapCut — https://www.capcut.com\n\n"
-            "Полезные ссылки:\n"
-            f"Instagram: {INSTAGRAM_LINK}\n"
-            f"YouTube: {YOUTUBE_LINK}\n"
-            f"VK: {VK_LINK}\n"
-            f"Telegram канал: {TELEGRAM_CHANNEL_LINK}\n"
-            "\nСовет: Начни с одной нейросети, потом добавляй остальные!"
-        )
-        await query.edit_message_text(text=text)
 
-# ====== Запуск бота ======
+    if query.data == 'get_gift':
+        # Отправляем файл пользователю
+        with open(PDF_FILE, "rb") as f:
+            await query.message.reply_document(f, filename="5_бесплатных_нейросетей.png")
+
 if __name__ == "__main__":
     app = ApplicationBuilder().token(TOKEN).build()
+
+    # Команды и кнопки
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button))
-    print("Бот Vika I AI запущен...")
+
+    print("Бот запущен...")
     app.run_polling()
