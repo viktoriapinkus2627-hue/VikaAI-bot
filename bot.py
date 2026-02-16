@@ -6,7 +6,7 @@ TOKEN = "8559334940:AAGwmycwxNnY4mpPJXXKHzoqUGJPgyDt0bU"
 
 # Ссылки на ваши социальные сети и канал
 CHANNEL_LINK = "https://web.telegram.org/k/#@ai_freelance_startgo"
-PDF_FILE = "gift.png"  # имя файла с PDF/PNG в проекте
+PDF_FILE = "gift.png.png"  # имя файла с PDF/PNG в проекте
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Приветственное сообщение с кнопками"""
